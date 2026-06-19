@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X, Play, Server, Monitor, ListVideo, Layers, AlertTriangle, ExternalLink } from "lucide-react";
+import { X, ListVideo, ExternalLink } from "lucide-react";
 import { MediaItem, WatchHistoryItem } from "../types";
 import { smartFetch } from "../api";
 
@@ -20,8 +20,6 @@ interface Episode {
 }
 
 export default function VideoPlayer({ item, onClose, onUpdateHistory }: VideoPlayerProps) {
-  // Configurable stream servers
-  const [selectedServer, setSelectedServer] = useState<"embedmstr" | "vidsrc" | "embedsu">("embedmstr");
   const [currentSeason, setCurrentSeason] = useState<number>(1);
   const [currentEpisode, setCurrentEpisode] = useState<number>(1);
   const [episodes, setEpisodes] = useState<Episode[]>([]);
@@ -73,28 +71,12 @@ export default function VideoPlayer({ item, onClose, onUpdateHistory }: VideoPla
     }
   };
 
-  // Generate Stream URLs based on selection
+  // Generate Stream URLs
   const getEmbedUrl = () => {
-    const finalImdb = imdbId || "tt1375666"; // Fallback poster IMDb ID
-    
-    if (selectedServer === "embedmstr") {
-      if (isShow) {
-        return `https://embedmaster.link/tv/${tmdbId}/${currentSeason}/${currentEpisode}`;
-      } else {
-        return `https://embedmaster.link/movie/${tmdbId}`;
-      }
-    } else if (selectedServer === "vidsrc") {
-      if (isShow) {
-        return `https://vidsrc.me/embed/tv?imdb=${finalImdb}&season=${currentSeason}&episode=${currentEpisode}`;
-      } else {
-        return `https://vidsrc.me/embed/movie?imdb=${finalImdb}`;
-      }
+    if (isShow) {
+      return `https://embedmaster.link/tv/${tmdbId}/${currentSeason}/${currentEpisode}`;
     } else {
-      if (isShow) {
-        return `https://embed.su/embed/tv/${tmdbId}/${currentSeason}/${currentEpisode}`;
-      } else {
-        return `https://embed.su/embed/movie/${tmdbId}`;
-      }
+      return `https://embedmaster.link/movie/${tmdbId}`;
     }
   };
 
@@ -126,48 +108,6 @@ export default function VideoPlayer({ item, onClose, onUpdateHistory }: VideoPla
           </div>
 
           <div id="player-headers-actions" className="flex items-center gap-3">
-            {/* Server Selection dropdown/buttons */}
-            <div className="bg-neutral-850 p-1 rounded-md flex items-center border border-neutral-750">
-              <button
-                id="btn-server-embedmstr"
-                onClick={() => setSelectedServer("embedmstr")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold transition-all ${
-                  selectedServer === "embedmstr"
-                    ? "bg-[#e50914] text-white"
-                    : "text-neutral-400 hover:text-white"
-                }`}
-              >
-                <Server className="w-3.5 h-3.5" />
-                Player 1
-              </button>
-              
-              <button
-                id="btn-server-vidsrc"
-                onClick={() => setSelectedServer("vidsrc")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold transition-all ${
-                  selectedServer === "vidsrc"
-                    ? "bg-[#e50914] text-white"
-                    : "text-neutral-400 hover:text-white"
-                }`}
-              >
-                <Monitor className="w-3.5 h-3.5" />
-                Player 2
-              </button>
-
-              <button
-                id="btn-server-embedsu"
-                onClick={() => setSelectedServer("embedsu")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold transition-all ${
-                  selectedServer === "embedsu"
-                    ? "bg-[#e50914] text-white"
-                    : "text-neutral-400 hover:text-white"
-                }`}
-              >
-                <Layers className="w-3.5 h-3.5" />
-                Player 3
-              </button>
-            </div>
-
             <a
               id="btn-open-new-tab"
               href={getEmbedUrl()}
@@ -189,28 +129,6 @@ export default function VideoPlayer({ item, onClose, onUpdateHistory }: VideoPla
               <X className="w-4 h-4" />
             </button>
           </div>
-        </div>
-
-        {/* Client alert bar for security/iframe settings */}
-        <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-neutral-900 border border-neutral-800 p-4 rounded-md text-xs">
-          <div className="flex items-start gap-2.5">
-            <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
-            <div>
-              <p className="font-bold text-white">Streaming Tip</p>
-              <p className="text-neutral-400 mt-0.5 max-w-xl">
-                If the video player is blocked, blank, or asks you to bypass security/iframes, click the link to load it directly in a new window.
-              </p>
-            </div>
-          </div>
-          <a
-            href={getEmbedUrl()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="shrink-0 flex items-center justify-center gap-1.5 px-4 py-2 bg-white text-black hover:bg-[#e50914] hover:text-white text-xs font-bold rounded shadow transition-all duration-200"
-          >
-            <ExternalLink className="w-4 h-4" />
-            Open Externally
-          </a>
         </div>
 
         {/* Outer Frame with Glowing Shadow Case */}

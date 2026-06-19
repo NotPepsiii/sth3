@@ -9,7 +9,9 @@ import {
   Bookmark,
   Calendar,
   Star,
-  Play
+  Play,
+  Info,
+  MessagesSquare
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { MediaItem, WatchHistoryItem, WatchlistItem } from "./types";
@@ -44,6 +46,7 @@ export default function App() {
   // Active overlays/viewer
   const [activePlayerItem, setActivePlayerItem] = useState<MediaItem | null>(null);
   const [selectedDetailsItem, setSelectedDetailsItem] = useState<MediaItem | null>(null);
+  const [showInfoDropdown, setShowInfoDropdown] = useState(false);
 
   // System general logs/states
   const [loading, setLoading] = useState(true);
@@ -677,6 +680,84 @@ export default function App() {
         )}
       </AnimatePresence>
 
+      {/* Community & Support Header Bar */}
+      <div className="bg-[#0b0b0d] border-b border-neutral-900 px-4 md:px-12 py-2 flex flex-wrap items-center justify-between gap-3 text-xs z-50">
+        <div className="flex items-center gap-3">
+          <a
+            id="btn-support-dev"
+            href="https://paypal.me/pepcolaa"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 px-3 py-1 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded transition-all duration-150 cursor-pointer text-[11px] shadow-sm rounded-sm"
+          >
+            Support developer Pepsi &lt;3
+          </a>
+        </div>
+
+        <div className="flex items-center gap-2.5 relative">
+          <a
+            id="btn-discord-invite"
+            href="https://discord.gg/pepflicks"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 px-3 py-1 bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold rounded transition-all duration-150 cursor-pointer text-[11px] shadow-sm rounded-sm"
+          >
+            <MessagesSquare className="w-3.5 h-3.5" />
+            Discord
+          </a>
+
+          {/* Info dropdown launcher */}
+          <div className="relative">
+            <button
+              id="btn-info-dropdown-toggle"
+              onClick={() => setShowInfoDropdown(!showInfoDropdown)}
+              className="flex items-center gap-1.5 px-3 py-1 bg-neutral-850 hover:bg-neutral-800 text-neutral-200 hover:text-white font-bold rounded transition-all duration-150 cursor-pointer text-[11px] border border-neutral-750 rounded-sm"
+            >
+              <Info className="w-3.5 h-3.5" />
+              Info
+            </button>
+
+            {/* Absolute info dropdown panel */}
+            <AnimatePresence>
+              {showInfoDropdown && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute right-0 mt-2 w-72 bg-neutral-950 border border-neutral-800 rounded shadow-2xl p-4 z-50 text-left cursor-default text-neutral-300"
+                >
+                  <h4 className="text-sm font-bold text-white mb-2 pb-1 border-b border-neutral-800">
+                    How to Use Pep Flick
+                  </h4>
+                  <ul className="space-y-2 text-[11px] leading-relaxed">
+                    <li>
+                      <span className="font-bold text-white">🎬 Watch Content:</span> Hover over or click any movie/show card, then click <span className="text-[#e50914] font-semibold">Play</span> or <span className="text-[#e50914] font-semibold">Watch</span> to launch the high-quality inline player.
+                    </li>
+                    <li>
+                      <span className="font-bold text-white">🔍 Instant Search:</span> Type in the search input to instantly discover movies or series in our database.
+                    </li>
+                    <li>
+                      <span className="font-bold text-white">➕ My List:</span> Save the movies or TV series you want to track by clicking the bookmark/watchlist buttons.
+                    </li>
+                    <li>
+                      <span className="font-bold text-white">📺 Series Episodes:</span> For TV shows, you can easily filter by season and select individual episodes inside the episode drawer.
+                    </li>
+                  </ul>
+                  <button
+                    id="btn-info-dropdown-close"
+                    onClick={() => setShowInfoDropdown(false)}
+                    className="mt-3.5 w-full bg-neutral-800 hover:bg-neutral-750 text-neutral-200 py-1 rounded text-xs transition-colors font-semibold"
+                  >
+                    Got it!
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+
       {/* Main Navigation Row */}
       <nav id="satellite-nav-node" className="sticky top-0 z-40 bg-[#141414]/95 border-b border-neutral-800/40 backdrop-blur-md py-4 px-4 md:px-12 flex flex-col md:flex-row gap-4 items-center justify-between">
         
@@ -689,8 +770,8 @@ export default function App() {
           }}
           className="flex items-center gap-2 cursor-pointer group shrink-0"
         >
-          <span className="font-sans font-black text-2xl tracking-tighter text-[#e50914]">
-            NETFLIX
+          <span className="font-sans font-black text-2xl tracking-tighter text-[#e50914] uppercase">
+            pepflick
           </span>
         </div>
 
@@ -910,7 +991,7 @@ export default function App() {
       <footer className="border-t border-neutral-900 bg-[#0c0c0e] py-10 px-4 md:px-12 text-center text-neutral-500 text-xs">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-left">
-            <p className="text-xs md:text-sm font-semibold text-neutral-450">Netflix Clone</p>
+            <p className="text-xs md:text-sm font-semibold text-neutral-450">Pep Flick</p>
             <p className="text-[11px] text-neutral-650 mt-1">This prototype uses TMDB catalog resources entirely frontend-side.</p>
           </div>
           <div className="text-right text-[11px]">
